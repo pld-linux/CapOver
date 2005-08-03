@@ -21,11 +21,18 @@ BuildRequires:	rpmbuild(macros) >= 1.153
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-The Capability Override LSM, is a kernel module which gives 
-the ability to specify that certain users/groups/programs are 
-to gain access to one or more extra capabilities. This means 
+The Capability Override LSM, is a kernel module which gives
+the ability to specify that certain users/groups/programs are
+to gain access to one or more extra capabilities. This means
 this LSM is a permissive module, rather than a restrictive one
 (which is more typical of LSMs).
+
+%description -l pl
+Capability Override LSM to modu³ j±dra daj±cy mo¿liwo¶æ okre¶lenia
+pewnych u¿ytkowników/grup/programów mog±cych mieæ dostêp do jednego
+lub wiêkszej liczby uprawnieñ (capabilities). Oznacza to, ¿e ten LSM
+jest modu³em zezwalaj±cym, a nie restrykcyjnym (co jest bardziej
+typowe dla LSM).
 
 %package -n kernel-misc-cap_over
 Summary:	cap_over kernel module
@@ -37,8 +44,10 @@ Requires(post,postun):	/sbin/depmod
 Requires:	CapOver
 
 %description -n kernel-misc-cap_over
+cap_over kernel module.
 
 %description -n kernel-misc-cap_over -l pl
+Modu³ j±dra cap_over.
 
 %package -n kernel-smp-misc-cap_over
 Summary:	cap_over SMP kernel module
@@ -50,8 +59,10 @@ Requires(post,postun):	/sbin/depmod
 Requires:	CapOver
 
 %description -n kernel-smp-misc-cap_over
+cap_over SMP kernel module.
 
 %description -n kernel-smp-misc-cap_over -l pl
+Modu³ SMP j±dra cap_over.
 
 %prep
 %setup -q
