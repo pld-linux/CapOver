@@ -5,27 +5,27 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_without	userspace	# don't build userspace module
 #
+%define rel	0.1
 Summary:	Capability Override LSM
 Summary(pl):	Modu³ LSM Capability Override
 Name:		CapOver
 Version:	0.9.3
-%define rel	0.1
 Release:	%{rel}
 License:	GPL
 Group:		Base/Kernel
 Source0:	http://files.randombit.net/cap_over/%{name}-%{version}.tgz
 # Source0-md5:	971e50c1abaa97ee4a9958e92dd88300
 URL:		http://www.randombit.net/projects/cap_over/
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.0}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.0}
 BuildRequires:	rpmbuild(macros) >= 1.153
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-The Capability Override LSM, is a kernel module which gives
-the ability to specify that certain users/groups/programs are
-to gain access to one or more extra capabilities. This means
-this LSM is a permissive module, rather than a restrictive one
-(which is more typical of LSMs).
+The Capability Override LSM, is a kernel module which gives the
+ability to specify that certain users/groups/programs are to gain
+access to one or more extra capabilities. This means this LSM is a
+permissive module, rather than a restrictive one (which is more
+typical of LSMs).
 
 %description -l pl
 Capability Override LSM to modu³ j±dra daj±cy mo¿liwo¶æ okre¶lenia
