@@ -5,7 +5,7 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_without	userspace	# don't build userspace module
 #
-%define rel	0.1
+%define rel	1
 Summary:	Capability Override LSM
 Summary(pl):	Modu³ LSM Capability Override
 Name:		CapOver
@@ -71,29 +71,34 @@ Modu³ SMP j±dra cap_over.
 %if %{with kernel}
 %configure
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-	mkdir -p modules/$cfg
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
 	fi
-	rm -rf include
-	chmod 000 modules
-	install -d include/{linux,config}
-	%{__make} -C %{_kernelsrcdir} clean \
-		SUBDIRS=$PWD \
-		O=$PWD \
-		%{?with_verbose:V=1}
-	install -d include/config
-	chmod 700 modules
-	ln -sf %{_kernelsrcdir}/config-$cfg .config
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-${cfg}.h include/linux/autoconf.h
-	ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
+	install -d o/include/linux
+	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
 	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
-	touch include/config/MARKER
-	%{__make} -C %{_kernelsrcdir} modules \
-		SUBDIRS=$PWD \
-		O=$PWD \
+	ln -sf %{_kernelsrcdir}/include/linux/autoconf-${cfg}.h o/include/linux/autoconf.h
+%if %{with dist_kernel}
+	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+%else
+	install -d o/include/config
+	touch o/include/config/MARKER
+	ln -sf %{_kernelsrcdir}/scripts o/scripts
+%endif
+	%{__make} -C %{_kernelsrcdir} clean \
+		RCS_FIND_IGNORE="-name '*.ko' -o" \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
+		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
-	mv *.ko modules/$cfg/
+	%{__make} -C %{_kernelsrcdir} modules \
+		CC="%{__cc}" CPP="%{__cpp}" \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
+		M=$PWD O=$PWD/o \
+		%{?with_verbose:V=1}
+
+	mv cap_over{,-$cfg}.ko
 done
 %endif
 
@@ -102,11 +107,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
 install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
-install modules/%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}/*.ko \
-		$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc
+install cap_over-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
+		$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/cap_over.ko
 %if %{with smp} && %{with dist_kernel}
-install modules/smp/*.ko \
-		$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc
+install cap_over-smp.ko \
+		$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc/cap_over.ko
 %endif
 %endif
 
