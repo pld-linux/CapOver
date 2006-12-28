@@ -34,7 +34,7 @@ lub wiêkszej liczby uprawnieñ (capabilities). Oznacza to, ¿e ten LSM
 jest modu³em zezwalaj±cym, a nie restrykcyjnym (co jest bardziej
 typowe dla LSM).
 
-%package -n kernel-misc-cap_over
+%package -n kernel%{_alt_kernel}-misc-cap_over
 Summary:	cap_over kernel module
 Summary(pl):	Modu³ j±dra cap_over
 Release:	%{rel}@%{_kernel_ver_str}
@@ -43,13 +43,13 @@ Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 Requires:	CapOver
 
-%description -n kernel-misc-cap_over
+%description -n kernel%{_alt_kernel}-misc-cap_over
 cap_over kernel module.
 
-%description -n kernel-misc-cap_over -l pl
+%description -n kernel%{_alt_kernel}-misc-cap_over -l pl
 Modu³ j±dra cap_over.
 
-%package -n kernel-smp-misc-cap_over
+%package -n kernel%{_alt_kernel}-smp-misc-cap_over
 Summary:	cap_over SMP kernel module
 Summary(pl):	Modu³ SMP j±dra cap_over
 Release:	%{rel}@%{_kernel_ver_str}
@@ -58,10 +58,10 @@ Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 Requires:	CapOver
 
-%description -n kernel-smp-misc-cap_over
+%description -n kernel%{_alt_kernel}-smp-misc-cap_over
 cap_over SMP kernel module.
 
-%description -n kernel-smp-misc-cap_over -l pl
+%description -n kernel%{_alt_kernel}-smp-misc-cap_over -l pl
 Modu³ SMP j±dra cap_over.
 
 %prep
@@ -69,7 +69,9 @@ Modu³ SMP j±dra cap_over.
 
 %build
 %if %{with kernel}
-%configure
+%configure \
+	--with-linux="%{_kernelsrcdir}"
+
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
@@ -123,16 +125,16 @@ install policy.pl $RPM_BUILD_ROOT/sbin
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-n kernel-misc-cap_over
+%post	-n kernel%{_alt_kernel}-misc-cap_over
 %depmod %{_kernel_ver}
 
-%postun	-n kernel-misc-cap_over
+%postun	-n kernel%{_alt_kernel}-misc-cap_over
 %depmod %{_kernel_ver}
 
-%post	-n kernel-smp-misc-cap_over
+%post	-n kernel%{_alt_kernel}-smp-misc-cap_over
 %depmod %{_kernel_ver}smp
 
-%postun	-n kernel-smp-misc-cap_over
+%postun	-n kernel%{_alt_kernel}-smp-misc-cap_over
 %depmod %{_kernel_ver}smp
 
 %if %{with userspace}
@@ -143,12 +145,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
-%files -n kernel-misc-cap_over
+%files -n kernel%{_alt_kernel}-misc-cap_over
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/*
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-misc-cap_over
+%files -n kernel%{_alt_kernel}-smp-misc-cap_over
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/misc/*
 %endif
