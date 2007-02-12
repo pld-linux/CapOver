@@ -7,7 +7,7 @@
 #
 %define rel	1
 Summary:	Capability Override LSM
-Summary(pl.UTF-8):   Moduł LSM Capability Override
+Summary(pl.UTF-8):	Moduł LSM Capability Override
 Name:		CapOver
 Version:	0.9.3
 Release:	%{rel}
@@ -36,7 +36,7 @@ typowe dla LSM).
 
 %package -n kernel%{_alt_kernel}-misc-cap_over
 Summary:	cap_over kernel module
-Summary(pl.UTF-8):   Moduł jądra cap_over
+Summary(pl.UTF-8):	Moduł jądra cap_over
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
@@ -51,7 +51,7 @@ Moduł jądra cap_over.
 
 %package -n kernel%{_alt_kernel}-smp-misc-cap_over
 Summary:	cap_over SMP kernel module
-Summary(pl.UTF-8):   Moduł SMP jądra cap_over
+Summary(pl.UTF-8):	Moduł SMP jądra cap_over
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
