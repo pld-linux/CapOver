@@ -7,7 +7,7 @@
 #
 %define rel	1
 Summary:	Capability Override LSM
-Summary(pl):	Modu³ LSM Capability Override
+Summary(pl.UTF-8):   ModuÅ‚ LSM Capability Override
 Name:		CapOver
 Version:	0.9.3
 Release:	%{rel}
@@ -27,16 +27,16 @@ access to one or more extra capabilities. This means this LSM is a
 permissive module, rather than a restrictive one (which is more
 typical of LSMs).
 
-%description -l pl
-Capability Override LSM to modu³ j±dra daj±cy mo¿liwo¶æ okre¶lenia
-pewnych u¿ytkowników/grup/programów mog±cych mieæ dostêp do jednego
-lub wiêkszej liczby uprawnieñ (capabilities). Oznacza to, ¿e ten LSM
-jest modu³em zezwalaj±cym, a nie restrykcyjnym (co jest bardziej
+%description -l pl.UTF-8
+Capability Override LSM to moduÅ‚ jÄ…dra dajÄ…cy moÅ¼liwoÅ›Ä‡ okreÅ›lenia
+pewnych uÅ¼ytkownikÃ³w/grup/programÃ³w mogÄ…cych mieÄ‡ dostÄ™p do jednego
+lub wiÄ™kszej liczby uprawnieÅ„ (capabilities). Oznacza to, Å¼e ten LSM
+jest moduÅ‚em zezwalajÄ…cym, a nie restrykcyjnym (co jest bardziej
 typowe dla LSM).
 
 %package -n kernel%{_alt_kernel}-misc-cap_over
 Summary:	cap_over kernel module
-Summary(pl):	Modu³ j±dra cap_over
+Summary(pl.UTF-8):   ModuÅ‚ jÄ…dra cap_over
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
@@ -46,12 +46,12 @@ Requires:	CapOver
 %description -n kernel%{_alt_kernel}-misc-cap_over
 cap_over kernel module.
 
-%description -n kernel%{_alt_kernel}-misc-cap_over -l pl
-Modu³ j±dra cap_over.
+%description -n kernel%{_alt_kernel}-misc-cap_over -l pl.UTF-8
+ModuÅ‚ jÄ…dra cap_over.
 
 %package -n kernel%{_alt_kernel}-smp-misc-cap_over
 Summary:	cap_over SMP kernel module
-Summary(pl):	Modu³ SMP j±dra cap_over
+Summary(pl.UTF-8):   ModuÅ‚ SMP jÄ…dra cap_over
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
@@ -61,8 +61,8 @@ Requires:	CapOver
 %description -n kernel%{_alt_kernel}-smp-misc-cap_over
 cap_over SMP kernel module.
 
-%description -n kernel%{_alt_kernel}-smp-misc-cap_over -l pl
-Modu³ SMP j±dra cap_over.
+%description -n kernel%{_alt_kernel}-smp-misc-cap_over -l pl.UTF-8
+ModuÅ‚ SMP jÄ…dra cap_over.
 
 %prep
 %setup -q
