@@ -2,8 +2,6 @@
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
-%bcond_without	up		# don't build UP module
-%bcond_without	smp		# don't build SMP module
 %bcond_without	userspace	# don't build userspace module
 #
 %define rel	1
@@ -18,7 +16,7 @@ Source0:	http://files.randombit.net/cap_over/%{name}-%{version}.tgz
 # Source0-md5:	971e50c1abaa97ee4a9958e92dd88300
 URL:		http://www.randombit.net/projects/cap_over/
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.0}
-BuildRequires:	rpmbuild(macros) >= 1.153
+BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -40,7 +38,7 @@ Summary:	cap_over kernel module
 Summary(pl.UTF-8):	Moduł jądra cap_over
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_up}
+%{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
 Requires:	CapOver
 
@@ -55,7 +53,7 @@ Summary:	cap_over SMP kernel module
 Summary(pl.UTF-8):	Moduł SMP jądra cap_over
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_smp}
+%{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
 Requires:	CapOver
 
@@ -73,49 +71,14 @@ Moduł SMP jądra cap_over.
 %configure \
 	--with-linux="%{_kernelsrcdir}"
 
-for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-		exit 1
-	fi
-	install -d o/include/linux
-	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-${cfg}.h o/include/linux/autoconf.h
-%if %{with dist_kernel}
-	%{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts
-%else
-	install -d o/include/config
-	touch o/include/config/MARKER
-	ln -sf %{_kernelsrcdir}/scripts o/scripts
-%endif
-	%{__make} -C %{_kernelsrcdir} clean \
-		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		SYSSRC=%{_kernelsrcdir} \
-		SYSOUT=$PWD/o \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-	%{__make} -C %{_kernelsrcdir} modules \
-		CC="%{__cc}" CPP="%{__cpp}" \
-		SYSSRC=%{_kernelsrcdir} \
-		SYSOUT=$PWD/o \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-
-	mv cap_over{,-$cfg}.ko
-done
+%build_kernel_modules -m cap_over
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
-install cap_over-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-		$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/cap_over.ko
-%if %{with smp} && %{with dist_kernel}
-install cap_over-smp.ko \
-		$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc/cap_over.ko
-%endif
+%install_kernel_modules -d misc -m cap_over
 %endif
 
 %if %{with userspace}
@@ -132,12 +95,6 @@ rm -rf $RPM_BUILD_ROOT
 %postun	-n kernel%{_alt_kernel}-misc-cap_over
 %depmod %{_kernel_ver}
 
-%post	-n kernel%{_alt_kernel}-smp-misc-cap_over
-%depmod %{_kernel_ver}smp
-
-%postun	-n kernel%{_alt_kernel}-smp-misc-cap_over
-%depmod %{_kernel_ver}smp
-
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
@@ -146,15 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
-%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-misc-cap_over
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/*
-%endif
-
-%if %{with smp} && %{with dist_kernel}
-%files -n kernel%{_alt_kernel}-smp-misc-cap_over
-%defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/misc/*
-%endif
 %endif
