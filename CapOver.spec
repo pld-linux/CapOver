@@ -15,7 +15,7 @@ Group:		Base/Kernel
 Source0:	http://files.randombit.net/cap_over/%{name}-%{version}.tgz
 # Source0-md5:	971e50c1abaa97ee4a9958e92dd88300
 URL:		http://www.randombit.net/projects/cap_over/
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.0}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
