@@ -14,6 +14,7 @@ License:	GPL
 Group:		Base/Kernel
 Source0:	http://files.randombit.net/cap_over/%{name}-%{version}.tgz
 # Source0-md5:	971e50c1abaa97ee4a9958e92dd88300
+Patch0:		%{name}-register_sysctl.patch
 URL:		http://www.randombit.net/projects/cap_over/
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
@@ -48,23 +49,9 @@ cap_over kernel module.
 %description -n kernel%{_alt_kernel}-misc-cap_over -l pl.UTF-8
 Moduł jądra cap_over.
 
-%package -n kernel%{_alt_kernel}-smp-misc-cap_over
-Summary:	cap_over SMP kernel module
-Summary(pl.UTF-8):	Moduł SMP jądra cap_over
-Release:	%{rel}@%{_kernel_ver_str}
-Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel}
-Requires(post,postun):	/sbin/depmod
-Requires:	CapOver
-
-%description -n kernel%{_alt_kernel}-smp-misc-cap_over
-cap_over SMP kernel module.
-
-%description -n kernel%{_alt_kernel}-smp-misc-cap_over -l pl.UTF-8
-Moduł SMP jądra cap_over.
-
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %if %{with kernel}
