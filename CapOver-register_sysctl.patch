@@ -1,0 +1,23 @@
+--- CapOver-0.9.3/cap_over.c	2004-10-10 20:25:38.000000000 +0200
++++ CapOver-0.9.3/cap_over.c	2007-08-23 13:00:32.467644750 +0200
+@@ -22,6 +22,7 @@
+ #include <linux/ctype.h>
+ #include <linux/binfmts.h>
+ #include <linux/rwsem.h>
++#include <linux/version.h>
+ 
+ /* Should be in include/linux/sysctl.h; want to be non-invasive */
+ #define KERN_CAP_OVER 100 /* FRAGILE; 2.6.8 max is 65 */
+@@ -669,7 +670,12 @@ static int __init cap_over_init(void)
+    if(err)
+       return err;
+ 
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,20)
+    sysctl_root_table = register_sysctl_table(cap_over_root_table, 0);
++#else
++   sysctl_root_table = register_sysctl_table(cap_over_root_table);
++#endif
++
+    if(!sysctl_root_table)
+       {
+       printk(KERN_WARNING
